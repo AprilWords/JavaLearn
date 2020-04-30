@@ -1,0 +1,96 @@
+***********************************20191113********************
+1.ThreadLoacal     (1)用法demo
+				   (2)ThreadLocalh常用API    ①set  ②get ③remove有助于JVM垃圾回收④protect T initialValue()返回线程局部变量的初始值
+2.内部类    (1)定义：将一个类定义在另一个类或方法里面
+			(2)分类:  成员内部类:成员内部类可以无条件访问外部类的属性和方法，但是外部类想要访问内部类属性或方法时，必须要创建一个内部类对象 ，通过该对象访问内部类属性和方法 
+					  局部内部类  存在于方法中
+					  匿名内部类  new Car(){};
+					  静态内部类  多了一个static，静态内部类不能使用外部类的非静态变量和方法
+			(3)优点:完善jiava多继承机制 每个内部类可以独立的继承接口或类  不论外部类是否继承或实现了某个类或接口，对于内部类没有影响
+					方便写事件驱动程序
+***********************************20191118********************
+3.return break continue
+return 直接中止循环，无论是单循环还是嵌套循环都会终止执行
+break会中止当前循环的操作，不会中止外层的循环的执行
+continue会中止本次的循环操作，不会中止整个循环。
+4.数据库的事务级别   事务  ACID   可能会出现的问题   脏读(事务A读取了B未提交的数据，并在这个基础上做了其他操作)    不可重复读(A读取了B已更改的数据)  幻读(A读取了B已新增的数据)
+解决方案  四个事务级别     数据库隔离事务采用锁的机制       插入数据锁定表   修改数据锁定行
+5.ThreadPoolExecutor7个构造参数
+(1)corePollSize：核心线程数。在创建了线程池后，线程中没有任何线程，等到有任务到来时才创建线程去执行任务。默认情况下，在创建了线程池后，线程池中的线程数为0，当有任务来之后，就会创建一个线程去执行任务，当线程池中的线程数目达到corePoolSize后，就会把到达的任务放到缓存队列当中。
+(2)maximumPoolSize：最大线程数。表明线程中最多能够创建的线程数量。
+(3)keepAliveTime：空闲的线程保留的时间。
+(4)TimeUnit：空闲线程的保留时间单位。
+	TimeUnit.DAYS;               //天
+	TimeUnit.HOURS;             //小时
+	TimeUnit.MINUTES;           //分钟
+	TimeUnit.SECONDS;           //秒
+	TimeUnit.MILLISECONDS;      //毫秒
+	TimeUnit.MICROSECONDS;      //微妙
+	TimeUnit.NANOSECONDS;       //纳秒
+(5)BlockingQueue<Runnable>：阻塞队列，存储等待执行的任务。参数有ArrayBlockingQueue、LinkedBlockingQueue、SynchronousQueue可选。
+(6)ThreadFactory：线程工厂，用来创建线程
+(7)RejectedExecutionHandler：队列已满，而且任务量大于最大线程的异常处理策略。
+	有以下取值
+	ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException异常。 
+	ThreadPoolExecutor.DiscardPolicy：也是丢弃任务，但是不抛出异常。 
+	ThreadPoolExecutor.DiscardOldestPolicy：丢弃队列最前面的任务，然后重新尝试执行任务（重复此过程）
+***********************************20191119********************
+1.sql查询
+(1)子查询  WHERE子句中使用单行子查询时，可以使用单行比较运算符（=,>,>=,<,<=,<>），将子查询的返回结果当做单一数值来使用
+		   WHERE子句中使用多行子查询时，可以使用多行比较运算符（IN,ALL,ANY)，将子查询的返回结果当做数值集合来使用  其中，ALL和ANY运算符必须与单行比较运算符结合使用
+		   EXISTS：判断子查询是否有返回结果（不关心具体行数和内容），如果返回则为TRUE，否则为FALSE
+(2)多表查询
+		交集:内连接 1. INNER JOIN:
+		
+		SELECT * FROM STAFF A,DEPARTMENT B WHERE A.ID = B.ID
+		SELECT * FROM STAFF A INNER JOIN DEPARTMENT B ON A.ID = B.ID
+							 
+		并集:全连接 2. FULL JOIN:
+		SELECT * FROM STAFF A FULL JOIN DEPARTMENT B ON A.ID = B.ID 
+		
+		3.左连接 LEFT JOIN
+		   SELECT *
+			 FROM STAFF A LEFT JOIN DEPARTMENT B ON A.ID = B.ID  
+		  
+		   SELECT *
+			 FROM STAFF A,DEPARTMENT B WHERE A.ID = B.ID(+) 
+		4.有链接RIGHT JOIN
+(3)联合查询  合查询是指两个或多个select 语句是并列关系，并且对这些select语句所捕获的记录集进行集合操作。以获得最终的结果集
+	union 		            结果集去重
+	union all 		       结果集不去重
+ 	intersect		       取结果集交集
+	minus 		           取结果集差集
+SELECT COLUMN_NAME,... | * FROM TABLE_NAME 
+ UNION [ALL] | MINUS | INTERSECT
+SELECT COLUMN_NAME,... | * FROM TABLE1_NAME WHERE ....
+(4)聚合查询
+ 查询对象按一定条件分组，然后对每一个组进行聚合分析。创建分组是通过GROUP BY子句实现的。与WHERE子句不同，GROUP BY子句用于归纳信息类型，以汇总相关数据。GROUP BY的作用是通过一定的规则将一个数据集划分成若干个小的区域，然后针对若干个小区域进行数据处理。
+ GROUP BY有一个原则,就是 select 后面的所有列中,没有使用聚合函数的列,必须出现在 group by 后面
+当GROUP BY子句中用于分组的列中出现NULL值时，将所有的NULL值分在同一组，即认为它们是“相等”的。
+
+SELECT columnname, function(column_name)
+    FROM table_name
+   WHERE  .....
+GROUP BY column_name;
+总结:子查询  多表查询  联合查询   聚合查询
+2.sql优化
+(1)表顺序   oracle的解析器按照从右到左的顺序处理FROM子句中的表名，因此FROM子句中写在最后的表(基础表)将被最先处理。解析器首先对基础表扫描并对记录进行排序，然后扫描第二个表并将所有从第二个表中检索出的记录与基础表中记录进行匹配合并
+结论:如果有2张表连接查询，一定要把小表写在最后。
+     如果有3个以上的表连接查询, 需要选择交叉表作为基础表, 交叉表是指那个被其他表所引用的表。
+3.代理技术
+
+静态代理 ->动态代理   jdk动态代理   接口
+						Cglib代理  继承  MethodInterceptor
+					· 
+
+
+
+
+
+
+		
+		
+		
+		
+		
+		

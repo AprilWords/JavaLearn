@@ -1,0 +1,42 @@
+编译:程序被按照某种指令集的规范翻译为cpu可以识别的底层代码的过程叫编译
+CPU   架构    指令集：程序在被执行前需要翻译成cpu可以理解的语言   芯片
+
+X86  pc
+ARM 手机平板
+mips            均是指令集的代号
+
+厂商开发兼容某种指令集的cpu需要指令集专利持有者授权
+cpu的基本组成单元为core，核心的实现方式被称为 microarchitecture（微架构），不同微架构执行各类程序的偏向不同 常见代号  Haswell  Cortex-A15
+
+业界认为  只有具备独立的微架构研发能力的企业才算具备了cpu研发的能力
+20190603
+Client连接Server  返回Connection Reset
+1.TCP三次握手
+第一次握手:Client发送syn包(syn=j) 到服务器，并进入SYN_SENT状态，等待Server确认
+第二次握手:服务器收到syn包，确认客户的syn（ack=j+1),同时自己也发送一个SYN包(syn=k)   server ->client    SYN+ACK包
+第三次握手:Client收到Server的 ACK+SYN包，向服务器发送确认包ACK(ACK=k+1),此包发送完，Client和Server进入到ESTABLISHED，完成
+
+TCP短连接 传递一次读写后一般由Client发起close操作
+TCP长连接   如果客户机已经消失，使得服务器保持一个半开放的连接，而服务器又在等待客户端的数据，则服务器永远等待客户端的数据    
+
+netstat -anp
+Recv_Q接收队列   表示收到的数据已经在本地接收缓冲，但是还有多少没有取走  
+SEND_Q发送队列   对方没有收到的数据或者说没有ACK的还在本地缓冲区   不为零的话 可能是应用向外发送数据包过快，对方接收数据包不够快
+
+connection reset 原因
+服务端因为某种原因关闭了connection，而客户端依然在读写数据，此时服务器会返回复位标志 RST
+
+三种解决方法：1.客户端和服务器统一使用TCP长连接
+			 2.统一使用短连接
+			 
+电路交换  通信双方必须建立专有线路 
+分组交换   ARPA资助建设了一个ARPANET,主要研究成果之一是开发一种新的协议来通信
+frame（帧）
+datagram（数据报）
+packet(数据包)
+segment（段）
+
+
+
+			
+ 
